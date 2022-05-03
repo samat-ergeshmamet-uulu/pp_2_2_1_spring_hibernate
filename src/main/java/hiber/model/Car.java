@@ -1,59 +1,60 @@
 package hiber.model;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
-@Table
+@Table(name = "cars")
 public class Car {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    public Car() {
-    }
+    @Column(name = "model")
+    private String model;
+    @Column(name = "series")
+    private int series;
+
+    @OneToOne (optional=true, mappedBy="car")
+    private User user;
+
+    public User getUser() {return user;}
+
+    public Long getId() {return id;}
 
     public Car(String model, int series) {
         this.model = model;
         this.series = series;
     }
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    public Car() {}
 
-    @Column
-    private String model;
+    public String getModel() {return model;}
 
-    @Column
-    int series;
+    public void setModel(String model) {this.model = model;}
+
+    public int getSeries() {return series;}
+
+    public void setSeries(int series) {this.series = series;}
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Car)) return false;
+        Car car = (Car) o;
+        return getSeries() == car.getSeries() && Objects.equals(getModel(), car.getModel());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getModel(), getSeries());
+    }
 
     @Override
     public String toString() {
         return "Car{" +
-                "id=" + id +
-                ", model='" + model + '\'' +
+                "model='" + model + '\'' +
                 ", series=" + series +
                 '}';
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int user_id) {
-        this.id = user_id;
-    }
-
-    public String getModel() {
-        return model;
-    }
-
-    public void setModel(String model) {
-        this.model = model;
-    }
-
-    public int getSeries() {
-        return series;
-    }
-
-    public void setSeries(int series) {
-        this.series = series;
     }
 }

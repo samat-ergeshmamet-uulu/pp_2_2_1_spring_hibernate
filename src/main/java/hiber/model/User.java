@@ -1,11 +1,15 @@
 package hiber.model;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Table(name = "users")
 public class User {
 
+   @OneToOne (optional=true, cascade=CascadeType.ALL)
+   @JoinColumn (name="car_id")
+   private Car car;
    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
    private Long id;
@@ -19,12 +23,11 @@ public class User {
    @Column(name = "email")
    private String email;
 
-   @OneToOne
-   @JoinColumn(name = "car_id")
-   private Car car;
+   public Car getCar() {return car;}
+   public void setCar(Car car) {this.car = car;}
 
    public User() {}
-
+   
    public User(String firstName, String lastName, String email, Car car) {
       this.firstName = firstName;
       this.lastName = lastName;
@@ -32,18 +35,8 @@ public class User {
       this.car = car;
    }
 
-   public User(String firstName, String lastName, String email) {
-      this.firstName = firstName;
-      this.lastName = lastName;
-      this.email = email;
-   }
-
    public Long getId() {
       return id;
-   }
-
-   public void setId(Long id) {
-      this.id = id;
    }
 
    public String getFirstName() {
@@ -70,22 +63,27 @@ public class User {
       this.email = email;
    }
 
-   public Car getCar() {
-      return car;
+   @Override
+   public boolean equals(Object o) {
+      if (this == o) return true;
+      if (!(o instanceof User)) return false;
+      User user = (User) o;
+      return Objects.equals(getFirstName(), user.getFirstName()) && Objects.equals(getLastName(), user.getLastName()) && Objects.equals(getEmail(), user.getEmail());
    }
 
-   public void setCar(Car car) {
-      this.car = car;
+   @Override
+   public int hashCode() {
+      return Objects.hash(getFirstName(), getLastName(), getEmail());
    }
 
    @Override
    public String toString() {
       return "User{" +
-              "id=" + id +
+              "car=" + car +
+              ", id=" + id +
               ", firstName='" + firstName + '\'' +
               ", lastName='" + lastName + '\'' +
               ", email='" + email + '\'' +
-              ", car=" + car +
               '}';
    }
 }
